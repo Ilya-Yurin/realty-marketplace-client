@@ -128,7 +128,7 @@ export default {
     cursor pointer
 
   .avatar
-    background url("../../../static/assets/images/user-dummy.svg")
+    background url("../../assets/images/user-dummy.svg")
 
   .header-menu
     padding 0 1rem
