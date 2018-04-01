@@ -3,12 +3,22 @@
     <v-content>
       <v-container fluid>
         <v-layout row wrap align-center justify-center>
+          <!-- LOGO -->
           <v-flex class="login__logo" d-flex align-center justify-center xs12 sm10 md4>
             <rmp-logo/>
           </v-flex>
+          <!-- /Logo -->
+
+          <!-- LOGIN FORM -->
           <v-flex d-flex xs12 sm10 md4>
             <v-card>
+              <!-- NOTIFICATIONS -->
+              <v-alert class="login__alert" type="error" :value="isError" v-text="error"/>
+              <!-- NOTIFICATIONS -->
               <v-card-text>
+                <!-- SOCIAL ICONS -->
+                <rmp-socials/>
+                <!-- /SOCIAL ICONS -->
                 <v-form>
                   <v-text-field prepend-icon="person"
                                 name="email"
@@ -33,34 +43,44 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer/>
-                <v-btn flat color="info">Войти</v-btn>
+                <v-btn flat color="info" @click="login">Войти</v-btn>
               </v-card-actions>
             </v-card>
           </v-flex>
+          <!-- /LOGIN FORM -->
+
+          <!-- SPACER -->
           <v-flex d-flex xs12 sm10 md4>
-            <spacer/>
+            <v-spacer/>
           </v-flex>
+          <!-- /SPACER -->
         </v-layout>
+        <!-- FOOTER -->
         <div class="login--footer">
           <div class="login--footer__label">&copy; 2018</div>
         </div>
+        <!-- /FOOTER -->
       </v-container>
     </v-content>
   </v-app>
 </template>
 
 <script>
-import { RmpLogo } from './common';
+import { RmpLogo, RmpSocials } from './common';
+import { AUTH_REQUEST } from '../store/actions/auth';
 
 export default {
   name: 'login',
   components: {
     RmpLogo,
+    RmpSocials,
   },
   data() {
     return {
       isPasswordVisible: false,
       valid: false,
+      isError: false,
+      error: '',
       email: '',
       emailRules: [
         v => !!v || 'Необходимо заполнить поле',
@@ -71,6 +91,19 @@ export default {
         v => !!v || 'Необходимо заполнить поле',
       ],
     };
+  },
+  methods: {
+    login() {
+      const { email, password } = this;
+      this.$store.dispatch(AUTH_REQUEST, { email, password })
+        .then(() => {
+          this.$router.push('/');
+        })
+        .catch((err) => {
+          this.error = err.toString();
+          this.isError = true;
+        });
+    },
   },
 };
 </script>
@@ -86,6 +119,13 @@ export default {
       align-self flex-start
       padding-bottom 2rem
       color #fff
+
+    &__alert
+      margin 0
+
+    &__social
+      display flex
+      padding 16px
 
     &--footer
       padding 2rem 2rem
