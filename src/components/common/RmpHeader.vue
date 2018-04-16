@@ -19,11 +19,13 @@
         <v-menu dark offset-y class="hidden-sm-and-down">
         <v-btn flat slot="activator">
           <v-avatar size="40px">
-            <img :src="avatarUrl" alt="">
+            <img :src="loggedUser.image_url" alt="">
           </v-avatar>
           <div class="profile-card">
-            <div class="profile-card--name body-2">Иван Иваныч</div>
-            <div class="caption grey--text">Риэлтор</div>
+            <div class="profile-card--name body-2">
+              {{loggedUser.first_name}} {{loggedUser.last_name}}
+            </div>
+            <div class="caption grey--text" v-if="isRealtor">Риэлтор</div>
           </div>
           <v-icon dark>arrow_drop_down</v-icon>
         </v-btn>
@@ -37,7 +39,7 @@
           <v-list-tile @click="goToRouteByName('user-deals')">
             <v-list-tile-title>Мои сделки</v-list-tile-title>
           </v-list-tile>
-          <v-list-tile @click="logout">
+          <v-list-tile @click="logoutUser">
             <v-list-tile-title>Выйти</v-list-tile-title>
           </v-list-tile>
         </v-list>
@@ -52,10 +54,10 @@
           <v-icon>menu</v-icon>
         </v-btn>
         <v-list class="hidden-md-and-up">
-          <v-list-tile>
+          <v-list-tile @click="goToRouteByName('objects')">
             <v-list-tile-title>Объекты</v-list-tile-title>
           </v-list-tile>
-          <v-list-tile>
+          <v-list-tile @click="goToRouteByName('performers')">
             <v-list-tile-title>Исполнители</v-list-tile-title>
           </v-list-tile>
         </v-list>
@@ -68,16 +70,16 @@
           <v-icon>person</v-icon>
         </v-btn>
         <v-list class="hidden-md-and-up">
-          <v-list-tile>
+          <v-list-tile @click="goToRouteByName('user-profiles')">
             <v-list-tile-title>Мой профиль</v-list-tile-title>
           </v-list-tile>
-          <v-list-tile>
+          <v-list-tile @click="goToRouteByName('user-objects')">
             <v-list-tile-title>Мои объекты</v-list-tile-title>
           </v-list-tile>
-          <v-list-tile>
+          <v-list-tile @click="goToRouteByName('user-deals')">
             <v-list-tile-title>Мои сделки</v-list-tile-title>
           </v-list-tile>
-          <v-list-tile>
+          <v-list-tile @click="logoutUser">
             <v-list-tile-title>Выйти</v-list-tile-title>
           </v-list-tile>
         </v-list>
@@ -90,29 +92,30 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
 import RmpLogo from './RmpLogo';
+import * as AUTH from '../../store/actions/auth';
 
 export default {
   name: 'RmpHeader',
   components: {
     RmpLogo,
   },
-  data() {
-    return {
-      drawer: false,
-    };
-  },
   computed: {
-    avatarUrl() {
-      return null;
-    },
+    ...mapGetters({
+      loggedUser: 'user',
+      isRealtor: 'isRealtor',
+    }),
   },
   methods: {
+    ...mapActions({
+      logout: AUTH.LOGOUT,
+    }),
     goToRouteByName(name) {
       this.$router.push({ name });
     },
-    logout() {
-      console.log('Log out');
+    logoutUser() {
+      this.logout().then(() => this.$router.push('/login'));
     },
   },
 };

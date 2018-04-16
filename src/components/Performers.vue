@@ -15,7 +15,7 @@ export default {
   name: 'Performers',
   data() {
     return {
-      msg: 'This is performers',
+      msg: 'Performers',
     };
   },
 };

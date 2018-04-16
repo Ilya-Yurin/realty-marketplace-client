@@ -40,11 +40,14 @@
                                 required>
                   </v-text-field>
                 </v-form>
+                <!-- /LOGIN FROM -->
               </v-card-text>
+              <!-- ACTIONS -->
               <v-card-actions>
-                <v-spacer/>
-                <v-btn flat color="info" @click="login">Войти</v-btn>
+                <v-btn large color="primary" @click="login">Войти</v-btn>
+                <v-btn large to="registration">Регистрация</v-btn>
               </v-card-actions>
+              <!-- /ACTIONS -->
             </v-card>
           </v-flex>
           <!-- /LOGIN FORM -->
@@ -67,7 +70,7 @@
 
 <script>
 import { RmpLogo, RmpSocials } from './common';
-import { AUTH_REQUEST } from '../store/actions/auth';
+import * as AUTH from '../store/actions/auth';
 
 export default {
   name: 'login',
@@ -95,10 +98,8 @@ export default {
   methods: {
     login() {
       const { email, password } = this;
-      this.$store.dispatch(AUTH_REQUEST, { email, password })
-        .then(() => {
-          this.$router.push('/');
-        })
+      this.$store.dispatch(AUTH.LOGIN, { email, password })
+        .then(() => this.$router.push('/'))
         .catch((err) => {
           this.error = err.toString();
           this.isError = true;

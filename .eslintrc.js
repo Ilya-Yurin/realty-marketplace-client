@@ -35,6 +35,7 @@ module.exports = {
     'no-param-reassign': ['error', {
       props: true,
       ignorePropertyModificationsFor: [
+        'config', // for vuex config
         'state', // for vuex state
         'acc', // for reduce accumulators
         'e' // for e.returnvalue

@@ -1,4 +1,13 @@
-export const AUTH_REQUEST = 'AUTH_REQUEST';
-export const AUTH_SUCCESS = 'AUTH_SUCCESS';
-export const AUTH_ERROR = 'AUTH_ERROR';
-export const AUTH_LOGOUT = 'AUTH_LOGOUT';
+export const LOGIN = 'LOGIN';
+export const REGISTER = 'REGISTER';
+export const SELF = 'SELF';
+export const SUCCESS = 'SUCCESS';
+export const SELF_SUCCESS = 'SELF_SUCCESS';
+export const LOGOUT = 'LOGOUT';
+export const SET_USER = 'SET_USER';
+export const UPDATE_PROFILE = 'UPDATE_PROFILE';
+export const SET_ACCESS_TOKEN = 'SET_ACCESS_TOKEN';
+export const SET_REFRESH_TOKEN = 'SET_REFRESH_TOKEN';
+export const CLEAR_ACCESS_TOKEN = 'CLEAR_ACCESS_TOKEN';
+export const CLEAR_REFRESH_TOKEN = 'CLEAR_REFRESH_TOKEN';
+export const TOGGLE_TYPE = 'TOGGLE_TYPE';

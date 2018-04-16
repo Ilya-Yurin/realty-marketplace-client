@@ -1,0 +1,2 @@
+export const APP_SET_STATUS = 'APP_SET_STATUS';
+export const AUTH_SET_STATUS = 'AUTH_SET_STATUS';

@@ -13,7 +13,7 @@ export default {
   name: 'UserObjects',
   data() {
     return {
-      msg: 'This is objects',
+      msg: 'My objects',
     };
   },
 };

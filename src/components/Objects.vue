@@ -15,7 +15,7 @@ export default {
   name: 'Objects',
   data() {
     return {
-      msg: 'This is object',
+      msg: 'Objects',
     };
   },
 };

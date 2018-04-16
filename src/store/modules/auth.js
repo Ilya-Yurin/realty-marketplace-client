@@ -1,62 +1,100 @@
-import axios from 'axios';
-import Promise from 'bluebird';
+import _ from 'lodash';
+import * as AUTH from '../actions/auth';
+import Auth from '../../services';
+import { USER } from '../../constants';
 
-import { AUTH_REQUEST, AUTH_ERROR, AUTH_SUCCESS, AUTH_LOGOUT } from '../actions/auth';
-import { USER_REQUEST } from '../actions/user';
-import HTTP from '../http-common';
-
-const authState = { token: localStorage.getItem('user-token') || '', status: '', hasLoadedOnce: false };
+const authState = {
+  tokens: {
+    access: null,
+    refresh: null,
+  },
+  user: null,
+  isLoggedIn: false,
+};
 
 const getters = {
-  isAuthenticated: state => !!state.token,
-  authStatus: state => state.status,
+  user: state => state.user || {},
+  isAuthenticated: state => state.isLoggedIn,
+  accessToken: state => state.tokens.access,
+  refreshToken: state => state.tokens.refresh,
+  isRealtor: state => (
+    _.isObject(state.user) ? state.user.type === USER.REALTOR : false
+  ),
+  isAdmin: state => (
+    _.isObject(state.user) ? state.user.type === USER.ADMIN : false
+  ),
 };
 
 const actions = {
-  [AUTH_REQUEST]: ({ commit, dispatch }, user) => (
-    new Promise((resolve, reject) => {
-      commit(AUTH_REQUEST);
-      HTTP.post('auth/login', {
-        body: user,
-      })
-        .then((resp) => {
-          localStorage.setItem('user-token', resp.token);
-          axios.defaults.headers.common['Authorization'] = resp.token;
-          commit(AUTH_SUCCESS, resp);
-          dispatch(USER_REQUEST);
-          resolve(resp);
-        })
-        .catch((err) => {
-          commit(AUTH_ERROR, err);
-          localStorage.removeItem('user-token');
-          reject(err);
-        });
+  [AUTH.REGISTER]: ({ commit }, userData) => (
+    Auth.register(userData).then((data) => {
+      commit(AUTH.SET_USER, data.user);
+      commit(AUTH.SET_ACCESS_TOKEN, data.token.access);
+      commit(AUTH.SET_REFRESH_TOKEN, data.token.refresh);
+      commit(AUTH.SUCCESS);
     })
   ),
-  [AUTH_LOGOUT]: ({ commit }) => (
-    new Promise((resolve) => {
-      commit(AUTH_LOGOUT);
-      localStorage.removeItem('user-token');
-      resolve();
+  [AUTH.LOGIN]: ({ commit }, credentials) => (
+    Auth.login(credentials).then((data) => {
+      commit(AUTH.SET_USER, data.user);
+      commit(AUTH.SET_ACCESS_TOKEN, data.token.access);
+      commit(AUTH.SET_REFRESH_TOKEN, data.token.refresh);
+      commit(AUTH.SUCCESS);
     })
   ),
+  [AUTH.SELF]: ({ commit }) => (
+    Auth.getSelf().then((data) => {
+      commit(AUTH.SET_USER, data);
+      commit(AUTH.SUCCESS);
+    })
+  ),
+  [AUTH.UPDATE_PROFILE]: ({ commit }, userData) => (
+    Auth.updateProfile(userData).then((data) => {
+      commit(AUTH.SELF_SUCCESS, data.user);
+    })
+  ),
+  [AUTH.LOGOUT]: ({ commit }) => {
+    commit(AUTH.LOGOUT);
+    commit(AUTH.CLEAR_ACCESS_TOKEN);
+    commit(AUTH.CLEAR_REFRESH_TOKEN);
+  },
+  [AUTH.TOGGLE_TYPE]: ({ commit }, type) => {
+    commit(AUTH.TOGGLE_TYPE, type);
+  },
 };
 
 const mutations = {
-  [AUTH_REQUEST]: (state) => {
-    state.status = 'loading';
+  [AUTH.SUCCESS]: (state) => {
+    state.isLoggedIn = true;
   },
-  [AUTH_SUCCESS]: (state, resp) => {
-    state.status = 'success';
-    state.token = resp.token;
-    state.hasLoadedOnce = true;
+  [AUTH.SET_USER]: (state, data) => {
+    state.user = data.user;
   },
-  [AUTH_ERROR]: (state) => {
-    state.status = 'error';
-    state.hasLoadedOnce = true;
+  [AUTH.LOGOUT]: (state) => {
+    state.isLoggedIn = false;
+    state.user = null;
   },
-  [AUTH_LOGOUT]: (state) => {
-    state.token = '';
+  [AUTH.SELF_SUCCESS]: (state, user) => {
+    state.user = user;
+  },
+  [AUTH.SET_ACCESS_TOKEN]: (state, token) => {
+    localStorage.setItem('accessToken', token);
+    state.tokens.access = token;
+  },
+  [AUTH.SET_REFRESH_TOKEN]: (state, token) => {
+    localStorage.setItem('refreshToken', token);
+    state.tokens.refresh = token;
+  },
+  [AUTH.CLEAR_ACCESS_TOKEN]: (state) => {
+    localStorage.removeItem('accessToken');
+    state.tokens.access = null;
+  },
+  [AUTH.CLEAR_REFRESH_TOKEN]: (state) => {
+    localStorage.removeItem('refreshToken');
+    state.tokens.refresh = null;
+  },
+  [AUTH.TOGGLE_TYPE]: (state, type) => {
+    state.user.type = type;
   },
 };
 

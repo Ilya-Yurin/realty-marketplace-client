@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Start from '@/components/Start';
 import Login from '@/components/Login';
-import Register from '@/components/Register';
+import Registration from '@/components/Registration';
 import Private from '@/components/Private';
 import Objects from '@/components/Objects';
 import Performers from '@/components/Performers';
@@ -11,15 +11,20 @@ import UserProfiles from '@/components/UserProfiles';
 import UserObjects from '@/components/UserObjects';
 import UserDeals from '@/components/UserDeals';
 
+import AppInit from './guards/AppInit';
+import RedirectIfAuthenticated from './guards/RedirectIfAuthenticated';
+import IsAuthenticated from './guards/IsAuthenticated';
+
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   routes: [
     {
       path: '/',
       name: 'private',
       component: Private,
+      beforeEnter: IsAuthenticated,
       children: [
         {
           path: '/',
@@ -64,11 +69,13 @@ export default new Router({
       path: '/login',
       name: 'login',
       component: Login,
+      beforeEnter: RedirectIfAuthenticated,
     },
     {
-      path: '/register',
-      name: 'register',
-      component: Register,
+      path: '/registration',
+      name: 'registration',
+      component: Registration,
+      beforeEnter: RedirectIfAuthenticated,
     },
     {
       path: '*',
@@ -76,3 +83,7 @@ export default new Router({
     },
   ],
 });
+
+router.beforeEach(AppInit);
+
+export default router;

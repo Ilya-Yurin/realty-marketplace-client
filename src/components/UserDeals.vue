@@ -13,7 +13,7 @@ export default {
   name: 'UserDeals',
   data() {
     return {
-      msg: 'This is deals',
+      msg: 'My deals',
     };
   },
 };
