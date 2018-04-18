@@ -26,8 +26,8 @@
                                 type="email"
                                 v-model="email"
                                 :rules="emailRules"
-                                required>
-                  </v-text-field>
+                                required
+                  />
                   <v-text-field prepend-icon="lock"
                                 name="password"
                                 label="Password"
@@ -37,8 +37,8 @@
                                 :append-icon="isPasswordVisible ? 'visibility_off' : 'visibility'"
                                 :append-icon-cb="() => (isPasswordVisible = !isPasswordVisible)"
                                 :type="isPasswordVisible ? 'text' : 'password'"
-                                required>
-                  </v-text-field>
+                                required
+                  />
                 </v-form>
                 <!-- /LOGIN FROM -->
               </v-card-text>

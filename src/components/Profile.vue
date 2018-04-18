@@ -1,7 +1,7 @@
 <template>
   <v-content>
     <!-- Nested router for private part of the site -->
-    <router-view></router-view>
+    <router-view/>
     <!-- /Nested router for private part of the site -->
   </v-content>
 </template>

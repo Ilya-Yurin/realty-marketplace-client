@@ -10,6 +10,8 @@ import Profile from '@/components/Profile';
 import UserProfiles from '@/components/UserProfiles';
 import UserObjects from '@/components/UserObjects';
 import UserDeals from '@/components/UserDeals';
+import UserSettings from '@/components/UserSettings';
+import UserSecurity from '@/components/UserSecurity';
 
 import AppInit from './guards/AppInit';
 import RedirectIfAuthenticated from './guards/RedirectIfAuthenticated';
@@ -50,6 +52,19 @@ const router = new Router({
               path: '',
               name: 'user-profiles',
               component: UserProfiles,
+              redirect: 'settings',
+              children: [
+                {
+                  path: 'settings',
+                  name: 'profiles-settings',
+                  component: UserSettings,
+                },
+                {
+                  path: 'security',
+                  name: 'profiles-security',
+                  component: UserSecurity,
+                },
+              ],
             },
             {
               path: 'objects',

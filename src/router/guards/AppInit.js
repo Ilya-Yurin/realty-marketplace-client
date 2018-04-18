@@ -27,6 +27,6 @@ export default (to, from, next) => {
       store.dispatch(LOADING.APP_SET_STATUS, false);
       store.dispatch(LOADING.AUTH_SET_STATUS, false);
       store.dispatch(AUTH.LOGOUT);
-      next('/login');
+      next();
     });
 };

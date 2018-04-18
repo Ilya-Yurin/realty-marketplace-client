@@ -25,8 +25,8 @@
                                 type="text"
                                 v-model="first_name"
                                 :rules="firstNameRules"
-                                required>
-                  </v-text-field>
+                                required
+                  />
                   <!-- /FIRST NAME -->
 
                   <!-- LAST NAME -->
@@ -34,8 +34,8 @@
                                 label="Фамилия"
                                 type="text"
                                 v-model="last_name"
-                                :rules="lastNameRules">
-                  </v-text-field>
+                                :rules="lastNameRules"
+                  />
                   <!-- /LAST NAME -->
 
                   <!-- EMAIL -->
@@ -44,8 +44,8 @@
                                 type="email"
                                 v-model="email"
                                 :rules="emailRules"
-                                required>
-                  </v-text-field>
+                                required
+                  />
                   <!-- /EMAIL -->
 
                   <!-- PHONE -->
@@ -55,8 +55,8 @@
                                 v-model="phone"
                                 :rules="phoneRules"
                                 mask="# (###) ###-####"
-                                required>
-                  </v-text-field>
+                                required
+                  />
                   <!-- /PHONE -->
 
                   <!-- PASSWORD -->
@@ -68,8 +68,8 @@
                                 :append-icon="isPasswordVisible ? 'visibility_off' : 'visibility'"
                                 :append-icon-cb="() => (isPasswordVisible = !isPasswordVisible)"
                                 :type="isPasswordVisible ? 'text' : 'password'"
-                                required>
-                  </v-text-field>
+                                required
+                  />
                   <!-- /PASSWORD -->
 
                   <!-- CONFIRM PASSWORD -->
@@ -81,8 +81,8 @@
                                 :append-icon="isPasswordVisible ? 'visibility_off' : 'visibility'"
                                 :append-icon-cb="() => (isPasswordVisible = !isPasswordVisible)"
                                 :type="isPasswordVisible ? 'text' : 'password'"
-                                required>
-                  </v-text-field>
+                                required
+                  />
                   <!-- CONFIRM PASSWORD -->
                 </v-form>
                 <!-- /REGISTRATION FROM -->
@@ -90,7 +90,7 @@
               <!-- ACTIONS -->
               <v-card-actions>
                 <v-flex d-flex>
-                <v-btn large color="primary" @click="register"
+                <v-btn large color="primary" @click="register()"
                        :disabled="!valid">
                   Зарегистрироваться</v-btn>
                 </v-flex>
@@ -175,7 +175,7 @@ export default {
       };
       this.registerAccount(userData)
         .then(() => {
-          this.$router.push('/');
+          this.$router.push('/profile');
         })
         .catch((err) => {
           this.error = err.toString();
