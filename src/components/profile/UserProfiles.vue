@@ -41,7 +41,7 @@
 
 <script>
 import { mapActions } from 'vuex';
-import * as AUTH from '../store/actions/auth';
+import * as AUTH from '../../store/actions/auth';
 
 export default {
   name: 'UserProfiles',

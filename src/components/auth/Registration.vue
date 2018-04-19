@@ -17,6 +17,38 @@
               <!-- NOTIFICATIONS -->
               <v-card-text>
                 <p class="title">Регистрация</p>
+
+                <!-- PREVIEW DATA FROM SOCIAL NETWORK -->
+                <v-layout class="registration__preview pb-3" column>
+                  <v-card>
+                    <v-card-text>
+                      <v-layout row wrap align-center class="pb-2">
+                        <v-avatar size="50px">
+                          <img src="../../assets/images/user-dummy.svg"
+                               alt=""/>
+                        </v-avatar>
+                        <v-flex d-flex row wrap align-center offset-xs1>
+                            <span class="text-xs-left subheading">
+                              Александров
+                              Александр
+                            </span>
+                        </v-flex>
+                      </v-layout>
+                      <v-layout row wrap>
+                        <v-flex>
+                          <p class="caption grey--text">Профиль не связан с
+                            какой-либо учетной записью. Войдите на сайт или
+                            зарегистрируйтесь, чтобы связать свою учетную
+                            запись с профилем социальной сети.</p>
+                          <p class="caption grey--text">Или выберите другую
+                            социальную сеть для входа.</p>
+                        </v-flex>
+                      </v-layout>
+                    </v-card-text>
+                  </v-card>
+                </v-layout>
+                <!-- /PREVIEW DATA FROM SOCIAL NETWORK -->
+
                 <!-- REGISTRATION FROM -->
                 <v-form v-model="valid" ref="form" lazy-validation>
                   <!-- FIRST NAME -->
@@ -89,11 +121,17 @@
               </v-card-text>
               <!-- ACTIONS -->
               <v-card-actions>
-                <v-flex d-flex>
-                <v-btn large color="primary" @click="register()"
-                       :disabled="!valid">
-                  Зарегистрироваться</v-btn>
+                <v-layout row wrap align-center>
+                <v-flex d-flex class="pb-2">
+                    <v-btn large @click="logIn()">Войти</v-btn>
                 </v-flex>
+                  <v-flex d-flex class="pb-2">
+                    <v-btn large color="primary" @click="register()"
+                           :disabled="!valid">
+                      Зарегистрироваться
+                    </v-btn>
+                  </v-flex>
+                </v-layout>
               </v-card-actions>
               <!-- /ACTIONS -->
             </v-card>
@@ -118,8 +156,8 @@
 
 <script>
 import { mapActions } from 'vuex';
-import { RmpLogo, RmpSocials } from './common';
-import * as AUTH from '../store/actions/auth';
+import { RmpLogo, RmpSocials } from '../common/index';
+import * as AUTH from '../../store/actions/auth';
 
 export default {
   name: 'registration',
@@ -174,13 +212,14 @@ export default {
         last_name: this.last_name,
       };
       this.registerAccount(userData)
-        .then(() => {
-          this.$router.push('/profile');
-        })
+        .then(() => this.$router.push('/profile'))
         .catch((err) => {
           this.error = err.toString();
           this.isError = true;
         });
+    },
+    logIn() {
+      console.log('You login!!!');
     },
   },
 };
@@ -197,6 +236,12 @@ export default {
       align-self flex-start
       padding-bottom 2rem
       color #fff
+
+    &__preview
+      .avatar
+        justify-content flex-start
+      p
+        text-align left
 
     &__alert
       margin 0

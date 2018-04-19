@@ -81,9 +81,9 @@
 <script>
 import _ from 'lodash';
 import { mapGetters, mapActions } from 'vuex';
-import * as AUTH from '../store/actions/auth';
-import { USER } from '../constants';
-import store from '../store/index';
+import * as AUTH from '../../store/actions/auth';
+import { USER } from '../../constants/index';
+import store from '../../store/index';
 
 export default {
   name: 'UserSettings',

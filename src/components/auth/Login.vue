@@ -69,8 +69,8 @@
 </template>
 
 <script>
-import { RmpLogo, RmpSocials } from './common';
-import * as AUTH from '../store/actions/auth';
+import { RmpLogo, RmpSocials } from '../common';
+import * as AUTH from '../../store/actions/auth';
 
 export default {
   name: 'login',
