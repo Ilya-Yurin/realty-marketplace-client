@@ -1,8 +1,12 @@
 export const LOGIN = 'LOGIN';
+export const LOGIN_GOOGLE = 'LOGIN_GOOGLE';
+export const LOGIN_FB = 'LOGIN_FB';
+export const LOGIN_VK = 'LOGIN_VK';
 export const REGISTER = 'REGISTER';
+export const SET_SOCIAL_USER = 'SET_SOCIAL_USER';
+export const CLEAR_SOCIAL_REGISTER_DATA = 'CLEAR_SOCIAL_REGISTER_DATA';
 export const SELF = 'SELF';
 export const SUCCESS = 'SUCCESS';
-export const SELF_SUCCESS = 'SELF_SUCCESS';
 export const LOGOUT = 'LOGOUT';
 export const SET_USER = 'SET_USER';
 export const UPDATE_PROFILE = 'UPDATE_PROFILE';

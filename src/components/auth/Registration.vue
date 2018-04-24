@@ -19,34 +19,7 @@
                 <p class="title">Регистрация</p>
 
                 <!-- PREVIEW DATA FROM SOCIAL NETWORK -->
-                <v-layout class="registration__preview pb-3" column>
-                  <v-card>
-                    <v-card-text>
-                      <v-layout row wrap align-center class="pb-2">
-                        <v-avatar size="50px">
-                          <img src="../../assets/images/user-dummy.svg"
-                               alt=""/>
-                        </v-avatar>
-                        <v-flex d-flex row wrap align-center offset-xs1>
-                            <span class="text-xs-left subheading">
-                              Александров
-                              Александр
-                            </span>
-                        </v-flex>
-                      </v-layout>
-                      <v-layout row wrap>
-                        <v-flex>
-                          <p class="caption grey--text">Профиль не связан с
-                            какой-либо учетной записью. Войдите на сайт или
-                            зарегистрируйтесь, чтобы связать свою учетную
-                            запись с профилем социальной сети.</p>
-                          <p class="caption grey--text">Или выберите другую
-                            социальную сеть для входа.</p>
-                        </v-flex>
-                      </v-layout>
-                    </v-card-text>
-                  </v-card>
-                </v-layout>
+                <preview-social class="pb-3"/>
                 <!-- /PREVIEW DATA FROM SOCIAL NETWORK -->
 
                 <!-- REGISTRATION FROM -->
@@ -55,7 +28,7 @@
                   <v-text-field name="first_name"
                                 label="Имя"
                                 type="text"
-                                v-model="first_name"
+                                v-model="user.first_name"
                                 :rules="firstNameRules"
                                 required
                   />
@@ -65,7 +38,7 @@
                   <v-text-field name="last_name"
                                 label="Фамилия"
                                 type="text"
-                                v-model="last_name"
+                                v-model="user.last_name"
                                 :rules="lastNameRules"
                   />
                   <!-- /LAST NAME -->
@@ -74,7 +47,7 @@
                   <v-text-field name="email"
                                 label="Email"
                                 type="email"
-                                v-model="email"
+                                v-model="user.email"
                                 :rules="emailRules"
                                 required
                   />
@@ -84,9 +57,9 @@
                   <v-text-field name="phone"
                                 label="Телефон"
                                 type="tel"
-                                v-model="phone"
+                                v-model="user.phone"
                                 :rules="phoneRules"
-                                mask="# (###) ###-####"
+                                mask="(###) ###-####"
                                 required
                   />
                   <!-- /PHONE -->
@@ -95,7 +68,7 @@
                   <v-text-field name="password"
                                 label="Пароль"
                                 id="password"
-                                v-model="password"
+                                v-model="user.password"
                                 :rules="passwordRules"
                                 :append-icon="isPasswordVisible ? 'visibility_off' : 'visibility'"
                                 :append-icon-cb="() => (isPasswordVisible = !isPasswordVisible)"
@@ -108,7 +81,7 @@
                   <v-text-field name="confirm_password"
                                 label="Пароль еще раз"
                                 id="confirm_password"
-                                v-model="confirm_password"
+                                v-model="user.confirm_password"
                                 :rules="confirmPasswordRules"
                                 :append-icon="isPasswordVisible ? 'visibility_off' : 'visibility'"
                                 :append-icon-cb="() => (isPasswordVisible = !isPasswordVisible)"
@@ -123,7 +96,7 @@
               <v-card-actions>
                 <v-layout row wrap align-center>
                 <v-flex d-flex class="pb-2">
-                    <v-btn large @click="logIn()">Войти</v-btn>
+                    <v-btn large @click="toLogIn()">Войти</v-btn>
                 </v-flex>
                   <v-flex d-flex class="pb-2">
                     <v-btn large color="primary" @click="register()"
@@ -155,46 +128,47 @@
 </template>
 
 <script>
+import _ from 'lodash';
 import { mapActions } from 'vuex';
-import { RmpLogo, RmpSocials } from '../common/index';
+import { RmpLogo, RmpSocials } from '../common/';
 import * as AUTH from '../../store/actions/auth';
+import PreviewSocial from './PreviewSocial';
+import store from '../../store';
+
 
 export default {
   name: 'registration',
   components: {
+    PreviewSocial,
     RmpLogo,
     RmpSocials,
   },
   data() {
     return {
+      user: _.assign({}, store.state.auth.socialUser),
       isPasswordVisible: false,
       valid: false,
       isError: false,
       error: '',
-      last_name: '',
       lastNameRules: [
         v => !!v || 'Необходимо заполнить поле',
       ],
-      first_name: '',
       firstNameRules: [
         v => !!v || 'Необходимо заполнить поле',
       ],
-      email: '',
       emailRules: [
         v => !!v || 'Необходимо заполнить поле',
         v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Введите корректный адрес',
       ],
-      phone: '',
       phoneRules: [
         v => !!v || 'Необходимо заполнить поле',
       ],
-      password: '',
       passwordRules: [
         v => !!v || 'Необходимо заполнить поле',
       ],
       confirm_password: '',
       confirmPasswordRules: [
-        v => v === this.password || 'Введенные пароли не совпадают',
+        v => v === this.user.password || 'Введенные пароли не совпадают',
         v => !!v || 'Необходимо заполнить поле',
       ],
     };
@@ -202,24 +176,21 @@ export default {
   methods: {
     ...mapActions({
       registerAccount: AUTH.REGISTER,
+      clearAuthData: AUTH.CLEAR_SOCIAL_REGISTER_DATA,
     }),
     register() {
-      const userData = {
-        email: this.email,
-        password: this.password,
-        phone: this.phone,
-        first_name: this.first_name,
-        last_name: this.last_name,
-      };
-      this.registerAccount(userData)
-        .then(() => this.$router.push('/profile'))
+      this.registerAccount(this.user)
+        .then(() => {
+          this.$router.push('/profile');
+          this.clearAuthData();
+        })
         .catch((err) => {
           this.error = err.toString();
           this.isError = true;
         });
     },
-    logIn() {
-      console.log('You login!!!');
+    toLogIn() {
+      this.$router.push('/login');
     },
   },
 };
@@ -237,18 +208,8 @@ export default {
       padding-bottom 2rem
       color #fff
 
-    &__preview
-      .avatar
-        justify-content flex-start
-      p
-        text-align left
-
     &__alert
       margin 0
-
-    &__social
-      display flex
-      padding 16px
 
     &--footer
       padding 2rem 2rem

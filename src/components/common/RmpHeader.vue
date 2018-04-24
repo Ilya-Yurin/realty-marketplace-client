@@ -110,12 +110,16 @@ export default {
   methods: {
     ...mapActions({
       logout: AUTH.LOGOUT,
+      clearAuthData: AUTH.CLEAR_SOCIAL_REGISTER_DATA,
     }),
     goToRouteByName(name) {
       this.$router.push({ name });
     },
     logoutUser() {
-      this.logout().then(() => this.$router.push('/login'));
+      this.logout().then(() => {
+        this.$router.push('/login');
+        this.clearAuthData();
+      });
     },
   },
 };

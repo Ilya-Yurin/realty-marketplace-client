@@ -22,6 +22,12 @@ class AuthService {
       .catch(error => Promise.reject(error));
   }
 
+  loginGoogle(accessToken) {
+    return this.http.post(`${this.uri}/google`, { access_token: accessToken })
+      .then(response => _.get(response, 'data'))
+      .catch(error => Promise.reject(error));
+  }
+
   refreshToken(token) {
     return this.http.post(`${this.uri}/login`, { token })
       .then(response => _.get(response, 'data'))

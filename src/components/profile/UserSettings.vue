@@ -10,14 +10,13 @@
       <!-- NOTIFICATIONS -->
       <v-card-text>
         <!-- EDIT PROFILE FROM -->
-        <v-form class="mt-3" v-model="valid" ref="form">
+        <v-form class="mt-3" v-model="valid" ref="form" lazy-validation>
           <!-- FIRST NAME -->
           <v-text-field name="first_name"
                         label="Имя"
                         type="text"
                         v-model="user.first_name"
                         :rules="firstNameRules"
-                        validate-on-blur="true"
                         required
           />
           <!-- /FIRST NAME -->
@@ -28,6 +27,7 @@
                         type="text"
                         v-model="user.last_name"
                         :rules="lastNameRules"
+                        required
           />
           <!-- /LAST NAME -->
 
@@ -82,13 +82,16 @@
 import _ from 'lodash';
 import { mapGetters, mapActions } from 'vuex';
 import * as AUTH from '../../store/actions/auth';
-import { USER } from '../../constants/index';
-import store from '../../store/index';
+import { USER } from '../../constants/';
+import store from '../../store/';
 
 export default {
   name: 'UserSettings',
-  data: () => (
-    {
+  data() {
+    return {
+      ...mapGetters({
+        isAdmin: 'isAdmin',
+      }),
       isRealtor: store.state.auth.user.type === USER.REALTOR,
       valid: false,
       isError: false,
@@ -107,12 +110,7 @@ export default {
       phoneRules: [
         v => !!v || 'Необходимо заполнить поле',
       ],
-    }
-  ),
-  computed: {
-    ...mapGetters({
-      isAdmin: 'isAdmin',
-    }),
+    };
   },
   methods: {
     ...mapActions({

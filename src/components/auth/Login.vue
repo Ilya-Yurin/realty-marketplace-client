@@ -19,7 +19,21 @@
                 <!-- SOCIAL ICONS -->
                 <rmp-socials/>
                 <!-- /SOCIAL ICONS -->
-                <v-form>
+
+                <!-- PREVIEW DATA FROM SOCIAL NETWORK -->
+                <preview-social class="pb-3"/>
+                <!-- /PREVIEW DATA FROM SOCIAL NETWORK -->
+
+                <!-- PROGRESS -->
+                <v-progress-circular v-if="isLoading"
+                                     indeterminate
+                                     color="primary"
+                                     :size="50"
+                />
+                <!-- /PROGRESS -->
+
+                <!-- LOGIN PASSWORD INPUTS -->
+                <v-form v-model="valid" v-if="!isLoading" ref="form">
                   <v-text-field prepend-icon="person"
                                 name="email"
                                 label="Email"
@@ -40,12 +54,17 @@
                                 required
                   />
                 </v-form>
-                <!-- /LOGIN FROM -->
+                <!-- /LOGIN PASSWORD INPUTS -->
               </v-card-text>
               <!-- ACTIONS -->
               <v-card-actions>
-                <v-btn large color="primary" @click="login">Войти</v-btn>
-                <v-btn large to="registration">Регистрация</v-btn>
+                <v-btn large color="primary" @click="login"
+                       :disabled="!valid || isLoading">
+                  Войти
+                </v-btn>
+                <v-btn large to="registration" :disabled="isLoading">
+                  Регистрация
+                </v-btn>
               </v-card-actions>
               <!-- /ACTIONS -->
             </v-card>
@@ -69,22 +88,28 @@
 </template>
 
 <script>
+import _ from 'lodash';
+import { mapActions } from 'vuex';
 import { RmpLogo, RmpSocials } from '../common';
+import PreviewSocial from './PreviewSocial';
 import * as AUTH from '../../store/actions/auth';
+import store from '../../store';
 
 export default {
   name: 'login',
   components: {
     RmpLogo,
     RmpSocials,
+    PreviewSocial,
   },
   data() {
     return {
       isPasswordVisible: false,
+      isLoading: false,
       valid: false,
       isError: false,
       error: '',
-      email: '',
+      email: _.get(store.state.auth.socialUser, 'email', ''),
       emailRules: [
         v => !!v || 'Необходимо заполнить поле',
         v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Введите корректный адрес',
@@ -96,11 +121,20 @@ export default {
     };
   },
   methods: {
+    ...mapActions({
+      loginSite: AUTH.LOGIN,
+      clearAuthData: AUTH.CLEAR_SOCIAL_REGISTER_DATA,
+    }),
     login() {
+      this.isLoading = true;
       const { email, password } = this;
-      this.$store.dispatch(AUTH.LOGIN, { email, password })
-        .then(() => this.$router.push('/'))
+      this.loginSite({ email, password })
+        .then(() => {
+          this.$router.push('/');
+          this.clearAuthData();
+        })
         .catch((err) => {
+          this.isLoading = false;
           this.error = err.toString();
           this.isError = true;
         });
